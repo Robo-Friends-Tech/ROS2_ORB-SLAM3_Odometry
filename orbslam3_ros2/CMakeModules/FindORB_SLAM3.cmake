@@ -5,7 +5,7 @@
 #
 # To help the search ORB_SLAM3_ROOT_DIR environment variable as the path to ORB_SLAM3 root folder
 #  e.g. `set( ORB_SLAM3_ROOT_DIR=~/ORB_SLAM3) `
-set(ORB_SLAM3_ROOT_DIR "/home/robo-dude/ORB-SLAM3")
+set(ORB_SLAM3_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../dependencies/ORB-SLAM3_Ubuntu24.04")
 
 message(${ORB_SLAM3_ROOT_DIR})
 message(${ORB_SLAM3_ROOT_DIR}/include)
