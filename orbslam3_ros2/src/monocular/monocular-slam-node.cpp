@@ -102,12 +102,24 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg) {
   // 6. Publish Odometry
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp    = this->get_clock()->now();
-  odom_msg.header.frame_id = "odom";
+  odom_msg.header.frame_id = "odoms";
   odom_msg.child_frame_id  = "base_link";
 
-  odom_msg.pose.pose.position.x = t_ros.x();
-  odom_msg.pose.pose.position.y = t_ros.y();
-  odom_msg.pose.pose.position.z = t_ros.z();
+
+  double y0  = -2.4354;
+  double y1  = -1.4243;
+  double x0  = 11.9878;
+  double x1  = 12.7879;
+  double xn0 = 1.1419;
+  double xn1 = 1.3058;
+  double amp = (y1 - y0) * (y1 - y0) + (x1 - x0) * (x1 - x0);
+  amp        = sqrt(amp);
+
+  double scale = amp / (xn1 - xn0);
+
+  odom_msg.pose.pose.position.x = t_ros.x() * scale;
+  odom_msg.pose.pose.position.y = t_ros.y() * scale;
+  odom_msg.pose.pose.position.z = t_ros.z() * scale;
 
   odom_msg.pose.pose.orientation.x = q_ros.x();
   odom_msg.pose.pose.orientation.y = q_ros.y();
@@ -121,9 +133,9 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg) {
   tf_msg.header         = odom_msg.header;
   tf_msg.child_frame_id = odom_msg.child_frame_id;
 
-  tf_msg.transform.translation.x = t_ros.x();
-  tf_msg.transform.translation.y = t_ros.y();
-  tf_msg.transform.translation.z = t_ros.z();
+  tf_msg.transform.translation.x = t_ros.x() * scale;
+  tf_msg.transform.translation.y = t_ros.y() * scale;
+  tf_msg.transform.translation.z = t_ros.z() * scale;
 
   tf_msg.transform.rotation.x = q_ros.x();
   tf_msg.transform.rotation.y = q_ros.y();

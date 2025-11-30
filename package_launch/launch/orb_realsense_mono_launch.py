@@ -32,6 +32,7 @@ def generate_launch_description():
               # config_voc,
               "/home/lemonx/it/nomad_software/nomad_core/ROS2_ORB-SLAM3_Odometry/orbslam3_ros2/vocabulary/ORBvoc.txt",
               "/home/lemonx/it/nomad_software/nomad_core/ROS2_ORB-SLAM3_Odometry/orbslam3_ros2/config/monocular/EuRoC.yaml",
+              "use_sim_time:=True"
               # config_settings,
           ],
           remappings=[
