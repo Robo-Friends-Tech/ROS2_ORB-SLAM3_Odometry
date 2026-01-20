@@ -101,21 +101,29 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg) {
 
   // 6. Publish Odometry
   nav_msgs::msg::Odometry odom_msg;
-  odom_msg.header.stamp    = this->get_clock()->now();
+  odom_msg.header.stamp    = msg->header.stamp;
   odom_msg.header.frame_id = "odoms";
   odom_msg.child_frame_id  = "base_link";
 
 
-  double y0  = -2.4354;
-  double y1  = -1.4243;
-  double x0  = 11.9878;
-  double x1  = 12.7879;
-  double xn0 = 1.1419;
-  double xn1 = 1.3058;
-  double amp = (y1 - y0) * (y1 - y0) + (x1 - x0) * (x1 - x0);
-  amp        = sqrt(amp);
+  // double y0  = -2.4354;
+  // double y1  = -1.4243;
+  // double x0  = 11.9878;
+  // double x1  = 12.7879;
+  // double xn0 = 1.1419;
+  // double xn1 = 1.3058;
+  // double y0  = 0.0;
+  // double y1  = 0.0;
+  // double x0  = 23.0;
+  // double x1  = 0.0;
+  // double xn1 = 5.00;
+  // double xn0 = 0.0;
 
-  double scale = amp / (xn1 - xn0);
+  // double amp = (y1 - y0) * (y1 - y0) + (x1 - x0) * (x1 - x0);
+  // amp        = sqrt(amp);
+
+  // double scale = amp / (xn1 - xn0);
+  double scale = 1.0;
 
   odom_msg.pose.pose.position.x = t_ros.x() * scale;
   odom_msg.pose.pose.position.y = t_ros.y() * scale;
@@ -126,7 +134,6 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg) {
   odom_msg.pose.pose.orientation.z = q_ros.z();
   odom_msg.pose.pose.orientation.w = q_ros.w();
 
-  odom_pub_->publish(odom_msg);
 
   // 7. Publish TF
   geometry_msgs::msg::TransformStamped tf_msg;
@@ -143,4 +150,5 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg) {
   tf_msg.transform.rotation.w = q_ros.w();
 
   tf_broadcaster_->sendTransform(tf_msg);
+  odom_pub_->publish(odom_msg);
 }
