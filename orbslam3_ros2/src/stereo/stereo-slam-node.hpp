@@ -8,7 +8,7 @@
 #include "message_filters/synchronizer.h"
 #include "message_filters/sync_policies/approximate_time.h"
 
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 
 #include "System.h"
 #include "Frame.h"
@@ -21,44 +21,43 @@
 
 #include "utility.hpp"
 
-class StereoSlamNode : public rclcpp::Node
-{
+class StereoSlamNode : public rclcpp::Node {
 public:
-    StereoSlamNode(ORB_SLAM3::System* pSLAM, const string &strSettingsFile, const string &strDoRectify);
+  StereoSlamNode(ORB_SLAM3::System *pSLAM, const string &strSettingsFile, const string &strDoRectify);
 
-    ~StereoSlamNode();
+  ~StereoSlamNode();
 
 private:
-    using ImageMsg = sensor_msgs::msg::Image;
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::Image, sensor_msgs::msg::Image> approximate_sync_policy;
+  using ImageMsg = sensor_msgs::msg::Image;
+  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::Image, sensor_msgs::msg::Image> approximate_sync_policy;
 
-    void GrabStereo(const sensor_msgs::msg::Image::SharedPtr msgRGB, const sensor_msgs::msg::Image::SharedPtr msgD);
-    
+  void GrabStereo(const sensor_msgs::msg::Image::SharedPtr msgRGB, const sensor_msgs::msg::Image::SharedPtr msgD);
 
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
 
-    // TF broadcaster
-    std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
 
-    ORB_SLAM3::System* m_SLAM;
+  // TF broadcaster
+  std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 
-    // Previous camera pose
-    Sophus::SE3f prev_pose_;
-    bool has_prev_pose_ = false;
+  ORB_SLAM3::System *m_SLAM;
 
-    // Accumulated odometry pose
-    Sophus::SE3f accumulated_pose_;
+  // Previous camera pose
+  Sophus::SE3f prev_pose_;
+  bool has_prev_pose_ = false;
 
-    bool doRectify;
-    cv::Mat M1l,M2l,M1r,M2r;
+  // Accumulated odometry pose
+  Sophus::SE3f accumulated_pose_;
 
-    cv_bridge::CvImageConstPtr cv_ptrLeft;
-    cv_bridge::CvImageConstPtr cv_ptrRight;
+  bool doRectify;
+  cv::Mat M1l, M2l, M1r, M2r;
 
-    std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image> > left_sub;
-    std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image> > right_sub;
+  cv_bridge::CvImageConstPtr cv_ptrLeft;
+  cv_bridge::CvImageConstPtr cv_ptrRight;
 
-    std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy> > syncApproximate;
+  std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> left_sub;
+  std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> right_sub;
+
+  std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy>> syncApproximate;
 };
 
 #endif
