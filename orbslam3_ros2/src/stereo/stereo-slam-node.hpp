@@ -20,13 +20,12 @@
 #include <tf2_ros/transform_broadcaster.h>
 
 #include "utility.hpp"
+#include <array>
 
 class StereoSlamNode : public rclcpp::Node
 {
  public:
-  StereoSlamNode(ORB_SLAM3::System* pSLAM,
-                 const string& strSettingsFile,
-                 const string& strDoRectify);
+  explicit StereoSlamNode(ORB_SLAM3::System* pSLAM);
 
   ~StereoSlamNode();
 
@@ -54,7 +53,11 @@ class StereoSlamNode : public rclcpp::Node
   Sophus::SE3f accumulated_pose_;
 
   bool doRectify;
+  bool do_transform;
   cv::Mat M1l, M2l, M1r, M2r;
+
+  // Pose and orientation covariance array (36 elements for 6x6 matrix)
+  std::array<double, 36> pose_covariance_;
 
   cv_bridge::CvImageConstPtr cv_ptrLeft;
   cv_bridge::CvImageConstPtr cv_ptrRight;
