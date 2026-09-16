@@ -99,7 +99,8 @@ StereoSlamNode::StereoSlamNode(ORB_SLAM3::System* pSLAM)
     std::make_shared<message_filters::Subscriber<ImageMsg>>(this, "camera/right");
 
   odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("odom", 10);
-  tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
+  if (do_transform)
+    tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
 
   syncApproximate =
     std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(
